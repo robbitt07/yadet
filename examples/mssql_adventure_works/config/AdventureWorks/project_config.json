@@ -1,0 +1,35 @@
+{
+    "name": "AdventureWorks",
+    "source_engine": "mssql",
+    "target_engine": "file_system",
+    "items": [
+        {
+            "ordinal": 100,
+            "table_name": "SalesLT.Customer",
+            "delta": true,
+            "order_by_columns": {
+                "ModifiedDate": "datetime"
+            },
+            "columns": "*",
+            "filter_clause": null,
+            "join_clause": null,
+            "batch_size": 5000,
+            "active": true,
+            "desc": null
+        },
+        {
+            "ordinal": 150,
+            "table_name": "SalesLT.SalesOrderDetail",
+            "delta": true,
+            "order_by_columns": {
+                "ModifiedDate": "datetime"
+            },
+            "columns": "*",
+            "filter_clause": null,
+            "join_clause": null,
+            "batch_size": 250,
+            "active": true,
+            "desc": null
+        }
+    ]
+}
