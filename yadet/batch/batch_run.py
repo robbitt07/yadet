@@ -4,7 +4,8 @@ from yadet.interface.source import SourceInterface
 from yadet.interface.target import TargetInterface
 from yadet.objects.base import BaseObject
 
-from datetime import datetime
+from datetime import datetime, timedelta
+from dateutil.parser import parse as date_parse
 from typing import Any, Dict, Optional
 
 
@@ -35,7 +36,10 @@ class ProjectBatchRun(BaseObject):
         for table_meta in self.meta["table_meta"]:
             if table_meta["records"] > 0:
                 self.project.tables_index.update({
-                    table_meta["table"]: table_meta["columns"]
+                    table_meta["table"]: {
+                        "last_runtime": self._meta["end_datetime"],
+                        "columns": table_meta["columns"]
+                    }
                 })
 
         self.project.save()
@@ -49,10 +53,27 @@ class ProjectBatchRun(BaseObject):
         self.target_engine = self.project.get_target_engine()
 
         for table_config in self.project.tables_config:
+            # Skip if Table Config not Active
+            if not table_config.active:
+                # TODO: Add Meta for Skipped Table
+                print(f'[{table_config.table_name}] Skipping inactive table')
+                continue
+
             # Source Table Index
             table_index = self.project.tables_index.get(
-                table_config.table_name, {})
+                table_config.table_name, {}
+            )
 
+            # Skip if Min Wait is Active
+            if table_config.min_wait is not None:
+                last_runtime = table_index.get("last_runtime")
+                if last_runtime is not None:
+                    last_runtime = date_parse(last_runtime)
+                    next_runtime = last_runtime + timedelta(seconds=table_config.min_wait * 60)
+                    if next_runtime > datetime.now():
+                        print(f'[{table_config.table_name}] Skipping table with min wait: {str(next_runtime)}')
+                        continue
+                    
             source = SourceInterface(
                 engine=self.source_engine, table_config=table_config, 
                 table_index=table_index

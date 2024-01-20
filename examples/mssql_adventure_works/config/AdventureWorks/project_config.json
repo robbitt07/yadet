@@ -6,7 +6,7 @@
         {
             "ordinal": 100,
             "table_name": "SalesLT.Customer",
-            "delta": true,
+            "delta": false,
             "order_by_columns": {
                 "ModifiedDate": "datetime"
             },
@@ -14,6 +14,7 @@
             "filter_clause": null,
             "join_clause": null,
             "batch_size": 5000,
+            "min_wait": 30,
             "active": true,
             "desc": null
         },
@@ -28,6 +29,7 @@
             "filter_clause": null,
             "join_clause": null,
             "batch_size": 250,
+            "min_wait": 30,
             "active": true,
             "desc": null
         }

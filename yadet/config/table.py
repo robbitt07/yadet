@@ -14,6 +14,7 @@ class TableConfig(BaseObject):
                  filter_clause: str = None,
                  join_clause: str = None,
                  batch_size: int = 5000,
+                 min_wait: int = None,
                  active: bool = True,
                  desc: str = None):
         self.ordinal: int = ordinal
@@ -23,12 +24,13 @@ class TableConfig(BaseObject):
         self.columns: str = columns
         self.filter_clause: str = filter_clause
         self.join_clause: str = join_clause
-        self.batch_size: int =batch_size
+        self.batch_size: int = batch_size
+        self.min_wait: int = min_wait
         self.active: bool = active
         self.desc: str = desc
 
         self.validate()
-        
+
     def validate(self):
         # TODO: Validate structure of elements
         # TODO: Validate Order by Columns
@@ -45,6 +47,7 @@ class TableConfig(BaseObject):
             "filter_clause": self.filter_clause,
             "join_clause": self.join_clause,
             "batch_size": self.batch_size,
+            "min_wait": self.min_wait,
             "active": self.active,
             "desc": self.desc,
         }

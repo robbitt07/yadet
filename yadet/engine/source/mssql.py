@@ -34,22 +34,22 @@ class MsSqlSourceEngine(SourceEngine):
             return "" if table_config.filter_clause is None else f"WHERE {table_config.filter_clause}"
         
         where_clause = ""
-        index_where_clause =  None
+        index_where_clause = ""
         if table_index:
             index_where_clause = " AND ".join([
-                f"{field} > '{parse_value(val=table_index[field]['max'], dtype=dtype)}'" 
+                f"{field} > '{parse_value(val=table_index['columns'][field]['max'], dtype=dtype)}'" 
                 for field, dtype in table_config.order_by_columns.items()
-                if table_index.get(field, {}).get("max") is not None
+                if table_index.get("columns", {}).get(field, {}).get("max") is not None
             ])
         
         if table_config.filter_clause is not None:
             where_clause = f"WHERE {table_config.filter_clause}"
-            if index_where_clause:
+            if index_where_clause not in (None, ""):
                 where_clause += f" AND {index_where_clause}"
         
-        elif index_where_clause is not None:
+        elif index_where_clause not in (None, ""):
             where_clause = f"WHERE {index_where_clause}"
-        
+
         return where_clause
 
     def order_by_clause(self, table_config: TableConfig) -> str:
