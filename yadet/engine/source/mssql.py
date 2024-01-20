@@ -64,8 +64,9 @@ class MsSqlSourceEngine(SourceEngine):
     def num_records_query(self, table_config: TableConfig, table_index: Dict) -> str:
         # Get Number of Records, Min, Max Value
         min_max_fields = ", ".join([
-            f"{func}({field}) AS '{field}__{func.lower()}'"
-            for field in table_config.order_by_columns.keys() for func in ("MIN", "MAX")
+            f"{func}({field}) AS '{indx}__{func.lower()}'"
+            for indx, field in enumerate(table_config.order_by_columns.keys())
+            for func in ("MIN", "MAX")
         ])
         sql = f"""SELECT COUNT(*) AS num_records, {min_max_fields} FROM \
                     {table_config.table_name} {self.join_clause(table_config=table_config)} \

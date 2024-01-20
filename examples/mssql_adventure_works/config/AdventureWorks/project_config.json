@@ -14,7 +14,7 @@
             "filter_clause": null,
             "join_clause": null,
             "batch_size": 5000,
-            "min_wait": 30,
+            "min_wait": 0,
             "active": true,
             "desc": null
         },
@@ -29,7 +29,7 @@
             "filter_clause": null,
             "join_clause": null,
             "batch_size": 250,
-            "min_wait": 30,
+            "min_wait": 0,
             "active": true,
             "desc": null
         }
