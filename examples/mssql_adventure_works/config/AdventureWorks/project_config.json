@@ -13,8 +13,25 @@
             "columns": "*",
             "filter_clause": null,
             "join_clause": null,
+            "flat": true,
             "batch_size": 5000,
-            "min_wait": 0,
+            "min_wait": 15,
+            "active": true,
+            "desc": null
+        },
+        {
+            "ordinal": 125,
+            "table_name": "SalesLT.CustomerAddress",
+            "delta": false,
+            "order_by_columns": {
+                "CustomerAddress.ModifiedDate": "datetime"
+            },
+            "columns": "addr.City, CustomerAddress.*",
+            "filter_clause": null,
+            "join_clause": "LEFT JOIN SalesLT.Address AS addr ON CustomerAddress.AddressID = addr.AddressID",
+            "flat": true,
+            "batch_size": 5000,
+            "min_wait": 15,
             "active": true,
             "desc": null
         },
@@ -28,8 +45,9 @@
             "columns": "*",
             "filter_clause": null,
             "join_clause": null,
+            "flat": true,
             "batch_size": 250,
-            "min_wait": 0,
+            "min_wait": 15,
             "active": true,
             "desc": null
         }

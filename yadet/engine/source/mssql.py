@@ -74,7 +74,7 @@ class MsSqlSourceEngine(SourceEngine):
         return clean_sql(sql=sql)
 
     def extract_query(self, table_config: TableConfig, start_indx: int, table_index: Dict) -> str:
-        sql = f"""
+        base_sql = f"""
         SELECT {table_config.columns} 
         FROM {table_config.table_name}
         {self.join_clause(table_config=table_config)}
@@ -82,6 +82,9 @@ class MsSqlSourceEngine(SourceEngine):
         {self.order_by_clause(table_config=table_config)}
         OFFSET {start_indx} ROWS
         FETCH NEXT {table_config.batch_size} ROWS ONLY
-        FOR JSON AUTO;
         """
+        if table_config.flat:
+            base_sql = f"WITH base_cte as ({base_sql}) SELECT * FROM base_cte"
+
+        sql = f"{base_sql} FOR JSON AUTO;"
         return clean_sql(sql=sql)

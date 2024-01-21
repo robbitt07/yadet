@@ -35,7 +35,7 @@ class ProjectBatchRun(BaseObject):
         # Update Table Index for Project
         for table_meta in self.meta["table_meta"]:
             if table_meta["records"] > 0:
-                self.project.tables_index.update({
+                self.project.project_table_index.update({
                     table_meta["table"]: {
                         "last_runtime": self._meta["end_datetime"],
                         "columns": table_meta["columns"]
@@ -60,7 +60,7 @@ class ProjectBatchRun(BaseObject):
                 continue
 
             # Source Table Index
-            table_index = self.project.tables_index.get(
+            table_index = self.project.project_table_index.get(
                 table_config.table_name, {}
             )
 
