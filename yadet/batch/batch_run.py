@@ -11,10 +11,14 @@ from typing import Any, Dict, Optional
 
 class ProjectBatchRun(BaseObject):
 
-    def __init__(self, project: ProjectConfig, batch_id: Optional[Any] = None):
+    def __init__(self,
+                 project: ProjectConfig,
+                 batch_id: Optional[Any] = None,
+                 debug: bool = False):
         self.project: ProjectConfig = project
         self.batch_id: Optional[Any] = batch_id
-        self.batch_key = datetime.today().strftime("%y%m%d-%H%M")
+        self.batch_key: str = datetime.today().strftime("%y%m%d-%H%M")
+        self.debug: bool = debug
         self._meta: Dict = {}
 
     def start(self):
@@ -33,14 +37,15 @@ class ProjectBatchRun(BaseObject):
         self.target_engine.write_meta(meta=self.meta, batch_key=self.batch_key)
 
         # Update Table Index for Project
-        for table_meta in self.meta["table_meta"]:
-            if table_meta["records"] > 0:
-                self.project.project_table_index.update({
-                    table_meta["table"]: {
-                        "last_runtime": self._meta["end_datetime"],
-                        "columns": table_meta["columns"]
-                    }
-                })
+        if not self.debug:
+            for table_meta in self.meta["table_meta"]:
+                if table_meta["records"] > 0:
+                    self.project.project_table_index.update({
+                        table_meta["table"]: {
+                            "last_runtime": self._meta["end_datetime"],
+                            "columns": table_meta["columns"]
+                        }
+                    })
 
         self.project.save()
 

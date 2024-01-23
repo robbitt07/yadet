@@ -24,5 +24,5 @@ project = ProjectConfig(
     }
 )
 
-batch_run = ProjectBatchRun(project=project)
+batch_run = ProjectBatchRun(project=project, debug=True)
 batch_run.run_batch()
