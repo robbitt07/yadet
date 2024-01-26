@@ -104,3 +104,4 @@ ngrok
 
 # misc
 BUILD_README.MD
+*.ipynb
