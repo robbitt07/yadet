@@ -6,7 +6,7 @@ install_requires = ["pyodbc"]
 
 setup(
     name="yadet",
-    version="1.0.0",
+    version="1.1.0",
     author="Robert Goss",
     author_email="robertgoss07@gmail.com",
     packages=[
