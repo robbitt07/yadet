@@ -34,22 +34,22 @@ class MsSqlSourceEngine(SourceEngine):
             return "" if table_config.filter_clause is None else f"WHERE {table_config.filter_clause}"
         
         where_clause = ""
-        index_where_clause =  None
+        index_where_clause = ""
         if table_index:
             index_where_clause = " AND ".join([
-                f"{field} > '{parse_value(val=table_index[field]['max'], dtype=dtype)}'" 
+                f"{field} > '{parse_value(val=table_index['columns'][field]['max'], dtype=dtype)}'" 
                 for field, dtype in table_config.order_by_columns.items()
-                if table_index.get(field, {}).get("max") is not None
+                if table_index.get("columns", {}).get(field, {}).get("max") is not None
             ])
         
         if table_config.filter_clause is not None:
             where_clause = f"WHERE {table_config.filter_clause}"
-            if index_where_clause:
+            if index_where_clause not in (None, ""):
                 where_clause += f" AND {index_where_clause}"
         
-        elif index_where_clause is not None:
+        elif index_where_clause not in (None, ""):
             where_clause = f"WHERE {index_where_clause}"
-        
+
         return where_clause
 
     def order_by_clause(self, table_config: TableConfig) -> str:
@@ -64,8 +64,9 @@ class MsSqlSourceEngine(SourceEngine):
     def num_records_query(self, table_config: TableConfig, table_index: Dict) -> str:
         # Get Number of Records, Min, Max Value
         min_max_fields = ", ".join([
-            f"{func}({field}) AS '{field}__{func.lower()}'"
-            for field in table_config.order_by_columns.keys() for func in ("MIN", "MAX")
+            f"{func}({field}) AS '{indx}__{func.lower()}'"
+            for indx, field in enumerate(table_config.order_by_columns.keys())
+            for func in ("MIN", "MAX")
         ])
         sql = f"""SELECT COUNT(*) AS num_records, {min_max_fields} FROM \
                     {table_config.table_name} {self.join_clause(table_config=table_config)} \
@@ -73,7 +74,7 @@ class MsSqlSourceEngine(SourceEngine):
         return clean_sql(sql=sql)
 
     def extract_query(self, table_config: TableConfig, start_indx: int, table_index: Dict) -> str:
-        sql = f"""
+        base_sql = f"""
         SELECT {table_config.columns} 
         FROM {table_config.table_name}
         {self.join_clause(table_config=table_config)}
@@ -81,6 +82,9 @@ class MsSqlSourceEngine(SourceEngine):
         {self.order_by_clause(table_config=table_config)}
         OFFSET {start_indx} ROWS
         FETCH NEXT {table_config.batch_size} ROWS ONLY
-        FOR JSON AUTO;
         """
+        if table_config.flat:
+            base_sql = f"WITH base_cte as ({base_sql}) SELECT * FROM base_cte"
+
+        sql = f"{base_sql} FOR JSON AUTO;"
         return clean_sql(sql=sql)

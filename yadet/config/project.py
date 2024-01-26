@@ -3,6 +3,7 @@ from yadet.engine.source.base import SourceMssqlEngine
 from yadet.engine.source.mssql import MsSqlSourceEngine
 from yadet.engine.target.base import TargetFileSystemEngine
 from yadet.engine.target.file_system import FileSystemTargetEngine
+from yadet.helpers.json import meta_handler
 from yadet.objects.base import BaseObject
 
 import json
@@ -28,7 +29,7 @@ class ProjectConfig(BaseObject):
         self.config_dir: Union[str, os.PathLike] = config_dir
 
         self._tables_config: List[TableConfig] = []
-        self._tables_index: Dict[str, Dict] = {}
+        self._project_table_index: Dict[str, Dict] = {}
         
         self.open()
 
@@ -42,15 +43,17 @@ class ProjectConfig(BaseObject):
 
     @property
     def table_index_filename(self) -> os.PathLike:
-        return os.path.join(self.project_directory, "project_table_index.json")
+        return os.path.join(
+            self.target_engine_params["base_directory"], "project_table_index.json"
+        )
 
     @property
     def tables_config(self) -> List[TableConfig]:
         return sorted(self._tables_config, key= lambda x: x.ordinal)
 
     @property
-    def tables_index(self) -> Dict[str, Dict]:
-        return self._tables_index
+    def project_table_index(self) -> Dict[str, Dict]:
+        return self._project_table_index
 
     @property
     def base_config(self) -> Dict:
@@ -76,9 +79,14 @@ class ProjectConfig(BaseObject):
         # Open Project Table Index
         if os.path.exists(self.table_index_filename):
             with open(self.table_index_filename, "r") as f:
-                self._tables_index = json.load(f)
+                self._project_table_index = json.load(f)
         else:
-            Path(self.project_directory).mkdir(parents=True, exist_ok=True)
+            # Ensure Directory exists
+            Path(
+                os.path.dirname(self.table_index_filename)
+            ).mkdir(parents=True, exist_ok=True)
+
+            # Save Base Project Table Index
             with open(self.table_index_filename, "w") as f: 
                 json.dump({}, f)
 
@@ -101,7 +109,7 @@ class ProjectConfig(BaseObject):
             }, f, indent=4)
 
         with open(self.table_index_filename, "w") as f:
-            json.dump(self.tables_index, f, indent=4)
+            json.dump(self.project_table_index, f, default=meta_handler, indent=4)
             
     def add_table_config(self, table_config: TableConfig):
         self._tables_config.append(table_config)
