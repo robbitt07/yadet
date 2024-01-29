@@ -24,11 +24,11 @@ class FileSystemTargetEngine(TargetEngine):
         Path(table_directory).mkdir(parents=True, exist_ok=True)
 
         if self.compression is None:
-            with open(os.path.join(table_directory, f"{start_indx}.json"), "w") as f:
+            with open(os.path.join(table_directory, f"{batch_key}-{start_indx}.json"), "w") as f:
                 json.dump(data, f)
                 
         elif self.compression == "gzip":
-            with gzip.open(os.path.join(table_directory, f"{start_indx}.json.gz"), "w") as f:
+            with gzip.open(os.path.join(table_directory, f"{batch_key}-{start_indx}.json.gz"), "w") as f:
                 f.write(json.dumps(data).encode('utf-8'))
         
         else:

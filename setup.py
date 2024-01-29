@@ -6,7 +6,7 @@ install_requires = ["pyodbc"]
 
 setup(
     name="yadet",
-    version="1.1.0",
+    version="1.2.0",
     author="Robert Goss",
     author_email="robertgoss07@gmail.com",
     packages=[
@@ -15,6 +15,7 @@ setup(
         "yadet.objects"
     ],
     license="MIT",
+    extras = {"extras": install_requires},
     url="https://github.com/robbitt07/yadet",
     install_requires=install_requires,
     classifiers=[
