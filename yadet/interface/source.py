@@ -16,7 +16,7 @@ class SourceInterface(BaseObject):
         self.table_index: Dict = table_index
 
     def info(self, msg: str):
-        print(f"[{self.table_config.table_name}] {msg}")
+        print(f"[{self.table_config.get_table_alias}] {msg}")
 
     def num_records_query(self) -> str:
         query = self.engine.num_records_query(

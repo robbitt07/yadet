@@ -42,7 +42,7 @@ class ProjectBatchRun(BaseObject):
                 if table_meta["records"] > 0:
                     self.project.project_table_index.update({
                         table_meta["table"]: {
-                            "last_runtime": self._meta["end_datetime"],
+                            "last_runtime": self._meta["start_datetime"],
                             "columns": table_meta["columns"]
                         }
                     })
@@ -61,12 +61,14 @@ class ProjectBatchRun(BaseObject):
             # Skip if Table Config not Active
             if not table_config.active:
                 # TODO: Add Meta for Skipped Table
-                print(f'[{table_config.table_name}] Skipping inactive table')
+                print(
+                    f'[{table_config.get_table_alias}] Skipping inactive table'
+                )
                 continue
 
             # Source Table Index
             table_index = self.project.project_table_index.get(
-                table_config.table_name, {}
+                table_config.get_table_alias, {}
             )
 
             # Skip if Min Wait is Active
@@ -76,7 +78,7 @@ class ProjectBatchRun(BaseObject):
                     last_runtime = date_parse(last_runtime)
                     next_runtime = last_runtime + timedelta(seconds=table_config.min_wait * 60)
                     if next_runtime > datetime.now():
-                        print(f'[{table_config.table_name}] Skipping table with min wait: {str(next_runtime)}')
+                        print(f'[{table_config.get_table_alias}] Skipping table with min wait: {str(next_runtime)}')
                         continue
                     
             source = SourceInterface(

@@ -19,10 +19,10 @@ class ExtractTransferInterface(BaseObject):
         self.meta: Dict = {}
 
     def info(self, msg: str):
-        print(f"[{self.table_config.table_name}] {msg}")
+        print(f"[{self.table_config.get_table_alias}] {msg}")
 
     def start(self):
-        self.meta["table"] = self.table_config.table_name
+        self.meta["table"] = self.table_config.get_table_alias
         self.meta["start_datetime"] = datetime.now()
 
     def end(self):

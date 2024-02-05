@@ -68,15 +68,23 @@ class MsSqlSourceEngine(SourceEngine):
             for indx, field in enumerate(table_config.order_by_columns.keys())
             for func in ("MIN", "MAX")
         ])
+        
+        # Table Alias
+        table_alias = "" if table_config.table_alias is None else f"AS {table_config.table_alias}"
+        
+        # SQL
         sql = f"""SELECT COUNT(*) AS num_records, {min_max_fields} FROM \
-                    {table_config.table_name} {self.join_clause(table_config=table_config)} \
+                    {table_config.table_name} {table_alias} {self.join_clause(table_config=table_config)} \
                     {self.where_clause(table_config=table_config, table_index=table_index)}"""
         return clean_sql(sql=sql)
 
     def extract_query(self, table_config: TableConfig, start_indx: int, table_index: Dict) -> str:
+        # Table Alias
+        table_alias = "" if table_config.table_alias is None else f"AS {table_config.table_alias}"
+        
         base_sql = f"""
         SELECT {table_config.columns} 
-        FROM {table_config.table_name}
+        FROM {table_config.table_name} {table_alias} 
         {self.join_clause(table_config=table_config)}
         {self.where_clause(table_config=table_config, table_index=table_index)}
         {self.order_by_clause(table_config=table_config)}
