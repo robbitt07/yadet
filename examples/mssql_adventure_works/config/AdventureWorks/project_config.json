@@ -8,8 +8,10 @@
             "table_name": "SalesLT.Customer",
             "delta": false,
             "order_by_columns": {
-                "ModifiedDate": "datetime"
+                "cust.ModifiedDate": "datetime"
             },
+            "table_alias": "cust",
+            "output_table_name": "SalesLT.Customer",
             "columns": "*",
             "filter_clause": null,
             "join_clause": null,
@@ -26,9 +28,11 @@
             "order_by_columns": {
                 "CustomerAddress.ModifiedDate": "datetime"
             },
+            "table_alias": null,
+            "output_table_name": null,
             "columns": "addr.City, CustomerAddress.*",
             "filter_clause": null,
-            "join_clause": "LEFT JOIN SalesLT.Address AS addr ON CustomerAddress.AddressID = addr.AddressID",
+            "join_clause": "LEFT JOIN SalesLT.Address AS addr ON SalesLT.CustomerAddress.AddressID = addr.AddressID",
             "flat": true,
             "batch_size": 5000,
             "min_wait": 15,
@@ -42,6 +46,8 @@
             "order_by_columns": {
                 "ModifiedDate": "datetime"
             },
+            "table_alias": null,
+            "output_table_name": null,
             "columns": "*",
             "filter_clause": null,
             "join_clause": null,

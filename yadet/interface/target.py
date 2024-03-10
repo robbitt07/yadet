@@ -13,7 +13,7 @@ class TargetInterface(BaseObject):
 
     def write_batch(self, data: List[Dict], batch_key: str, start_indx: int):
         return self.engine.write_batch(
-            table_name=self.table_config.table_name, data=data, batch_key=batch_key,
+            table_name=self.table_config.get_output_table_name, data=data, batch_key=batch_key,
             start_indx=start_indx
         )
 
