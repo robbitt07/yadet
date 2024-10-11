@@ -22,7 +22,7 @@ class ExtractTransferInterface(BaseObject):
         print(f"[{self.table_config.get_table_alias}] {msg}")
 
     def start(self):
-        self.meta["table"] = self.table_config.get_output_table_name
+        self.meta["table"] = self.table_config.get_table_alias
         self.meta["start_datetime"] = datetime.now()
 
     def end(self):
