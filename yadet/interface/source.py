@@ -5,15 +5,20 @@ from yadet.helpers.parser import parse_value
 from yadet.objects.base import BaseObject
 
 import json
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 class SourceInterface(BaseObject):
 
-    def __init__(self, engine: SourceEngine, table_config: TableConfig, table_index: Dict) -> None:
+    def __init__(self,
+                 engine: SourceEngine,
+                 table_config: TableConfig,
+                 table_index: Dict,
+                 debug: bool = False) -> None:
         self.engine: SourceEngine = engine
         self.table_config: TableConfig = table_config
         self.table_index: Dict = table_index
+        self.debug: bool = debug
 
     def info(self, msg: str):
         print(f"[{self.table_config.get_table_alias}] {msg}")
@@ -22,7 +27,7 @@ class SourceInterface(BaseObject):
         query = self.engine.num_records_query(
             table_config=self.table_config, table_index=self.table_index
         )
-        if self.engine.debug:
+        if self.engine.debug or self.debug:
             self.info(query)
         return query
 
@@ -30,7 +35,7 @@ class SourceInterface(BaseObject):
         query = self.engine.extract_query(
             table_config=self.table_config, start_indx=start_indx, table_index=self.table_index
         )
-        if self.engine.debug:
+        if self.engine.debug or self.debug:
             self.info(query)
         return query
 

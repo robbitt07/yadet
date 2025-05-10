@@ -37,15 +37,14 @@ class ProjectBatchRun(BaseObject):
         self.target_engine.write_meta(meta=self.meta, batch_key=self.batch_key)
 
         # Update Table Index for Project
-        if not self.debug:
-            for table_meta in self.meta["table_meta"]:
-                if table_meta["records"] > 0:
-                    self.project.project_table_index.update({
-                        table_meta["table"]: {
-                            "last_runtime": self._meta["start_datetime"],
-                            "columns": table_meta["columns"]
-                        }
-                    })
+        for table_meta in self.meta["table_meta"]:
+            if table_meta["records"] > 0:
+                self.project.project_table_index.update({
+                    table_meta["table"]: {
+                        "last_runtime": self._meta["start_datetime"],
+                        "columns": table_meta["columns"]
+                    }
+                })
 
         self.project.save()
 
@@ -80,16 +79,18 @@ class ProjectBatchRun(BaseObject):
                     if next_runtime > datetime.now():
                         print(f'[{table_config.get_table_alias}] Skipping table with min wait: {str(next_runtime)}')
                         continue
-                    
+
             source = SourceInterface(
-                engine=self.source_engine, table_config=table_config, 
-                table_index=table_index
+                engine=self.source_engine, table_config=table_config,
+                table_index=table_index, debug=self.debug
             )
             target = TargetInterface(
-                engine=self.target_engine, table_config=table_config
+                engine=self.target_engine, table_config=table_config,
+                debug=self.debug
             )
             extact_transfer = ExtractTransferInterface(
-                source=source, target=target, table_config=table_config
+                source=source, target=target, table_config=table_config,
+                debug=self.debug
             )
 
             # Run Transfer

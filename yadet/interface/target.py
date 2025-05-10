@@ -7,9 +7,13 @@ from typing import Dict, List
 
 class TargetInterface(BaseObject):
 
-    def __init__(self, engine: TargetEngine, table_config: TableConfig) -> None:
+    def __init__(self,
+                 engine: TargetEngine,
+                 table_config: TableConfig,
+                 debug: bool = False) -> None:
         self.engine: TargetEngine = engine
         self.table_config: TableConfig = table_config
+        self.debug: bool = debug
 
     def write_batch(self, data: List[Dict], batch_key: str, start_indx: int):
         return self.engine.write_batch(
