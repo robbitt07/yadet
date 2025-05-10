@@ -12,11 +12,13 @@ class ExtractTransferInterface(BaseObject):
     def __init__(self,
                  source: SourceInterface,
                  target: TargetInterface,
-                 table_config: TableConfig) -> None:
+                 table_config: TableConfig,
+                 debug: bool = False) -> None:
         self.source: SourceInterface = source
         self.target: TargetInterface = target
         self.table_config: TableConfig = table_config
         self.meta: Dict = {}
+        self.debug: bool = debug
 
     def info(self, msg: str):
         print(f"[{self.table_config.get_table_alias}] {msg}")
