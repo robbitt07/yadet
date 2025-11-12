@@ -8,7 +8,7 @@ def parse_value(val: str, dtype: str) -> Any:
     
     val = str(val)
     if dtype == "str":
-        return str(dtype)
+        return str(val)
 
     if dtype == "int":
         return int(val)
@@ -19,4 +19,4 @@ def parse_value(val: str, dtype: str) -> Any:
     if dtype == "datetime":
         return date_parse(val).strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
-    raise NotImplementedError(f"dtype {dtype} not implemented")
+    raise NotImplementedError(f"dtype `{dtype}` not implemented")

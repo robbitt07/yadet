@@ -33,6 +33,25 @@ class SourceEngine(BaseObject):
     def active(self) -> bool:
         return self._conn is not None
 
+    def close(self) -> None:
+        """Close the database connection if it exists."""
+        if self._conn is not None:
+            try:
+                self._conn.close()
+            except Exception:
+                pass  # Ignore errors during cleanup
+            finally:
+                self._conn = None
+
+    def __enter__(self):
+        """Context manager entry."""
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Context manager exit - ensures connection is closed."""
+        self.close()
+        return False  # Don't suppress exceptions
+
     def where_clause(self, table_config: TableConfig) -> str:
         raise NotImplementedError()
 

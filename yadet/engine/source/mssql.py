@@ -17,7 +17,20 @@ class MsSqlSourceEngine(SourceEngine):
         self.connect()
 
     def connect(self):
+        """Establish database connection."""
+        if self._conn is not None:
+            self.close()
         self._conn: pyodbc.Connection = pyodbc.connect(self._connection_str)
+
+    def close(self) -> None:
+        """Close the database connection."""
+        if self._conn is not None:
+            try:
+                self._conn.close()
+            except Exception:
+                pass  # Ignore errors during cleanup
+            finally:
+                self._conn = None
 
     def fetch_one(self, sql: str) -> Any:
         with self.conn.cursor() as cursor:

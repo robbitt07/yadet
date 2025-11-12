@@ -21,7 +21,7 @@ class ExtractTransferInterface(BaseObject):
         self.debug: bool = debug
 
     def info(self, msg: str):
-        print(f"[{self.table_config.get_table_alias}] {msg}")
+        print(f"[{self.table_config.get_table_alias}] `{msg}`")
 
     def start(self):
         self.meta["table"] = self.table_config.get_table_alias
@@ -39,7 +39,7 @@ class ExtractTransferInterface(BaseObject):
         # Start Tracking
         self.start()
 
-        self.info(f"Collecting {self.meta['records']:,.0f} records")
+        self.info(f"Collecting `{self.meta['records']:,.0f}` records")
 
         start_indx = 0
         while start_indx < self.meta["records"]:
@@ -54,7 +54,7 @@ class ExtractTransferInterface(BaseObject):
 
             # Increment Index
             start_indx += self.table_config.batch_size
-            self.info(f"Competed batch start_indx={start_indx:,.0f}")
+            self.info(f"Completed batch start_indx=`{start_indx:,.0f}`")
 
         # End Tracking
         self.end()

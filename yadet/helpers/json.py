@@ -1,21 +1,22 @@
 from datetime import datetime, date
+from typing import Any, Optional
 
 
-def meta_handler(obj):
+def meta_handler(obj: Any) -> Optional[str]:
     """Datetime Handlers (TODO: Have Converters for Various SQL Variants)
 
     Parameters
     ----------
-    obj : _type_
-        _description_
+    obj : datetime or date
+        The datetime or date object to convert to a string
 
     Returns
     -------
-    _type_
-        _description_
+    str
+        The datetime or date object converted to a string
     """
     if isinstance(obj, (datetime, date)):
         return obj.strftime("%Y-%m-%d %H:%M:%S.%f")[:-3]
 
-    if isinstance(obj, None):
-        return None
+    # None is handled by default JSON encoder
+    return None
