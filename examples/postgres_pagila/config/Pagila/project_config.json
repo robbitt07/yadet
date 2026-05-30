@@ -1,0 +1,61 @@
+{
+    "name": "Pagila",
+    "source_engine": "postgres",
+    "target_engine": "file_event_store",
+    "items": [
+        {
+            "ordinal": 100,
+            "table_name": "public.customer",
+            "delta": false,
+            "order_by_columns": {
+                "cust.last_update": "datetime"
+            },
+            "table_alias": "cust",
+            "output_table_name": "public.customer",
+            "columns": "*",
+            "filter_clause": null,
+            "join_clause": null,
+            "flat": true,
+            "batch_size": 5000,
+            "min_wait": 15,
+            "active": true,
+            "desc": null
+        },
+        {
+            "ordinal": 125,
+            "table_name": "public.rental",
+            "delta": false,
+            "order_by_columns": {
+                "rental.last_update": "datetime"
+            },
+            "table_alias": "rental",
+            "output_table_name": null,
+            "columns": "st.first_name, st.last_name, rental.*",
+            "filter_clause": null,
+            "join_clause": "LEFT JOIN public.staff AS st ON rental.staff_id = st.staff_id",
+            "flat": true,
+            "batch_size": 5000,
+            "min_wait": 15,
+            "active": true,
+            "desc": null
+        },
+        {
+            "ordinal": 150,
+            "table_name": "public.payment",
+            "delta": true,
+            "order_by_columns": {
+                "payment_date": "datetime"
+            },
+            "table_alias": null,
+            "output_table_name": null,
+            "columns": "*",
+            "filter_clause": null,
+            "join_clause": null,
+            "flat": true,
+            "batch_size": 250,
+            "min_wait": 15,
+            "active": true,
+            "desc": null
+        }
+    ]
+}

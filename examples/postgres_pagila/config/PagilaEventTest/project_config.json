@@ -1,0 +1,25 @@
+{
+    "name": "PagilaEventTest",
+    "source_engine": "postgres",
+    "target_engine": "file_event_store",
+    "items": [
+        {
+            "ordinal": 100,
+            "table_name": "public.customer",
+            "delta": false,
+            "order_by_columns": {
+                "cust.last_update": "datetime"
+            },
+            "table_alias": "cust",
+            "output_table_name": "public.customer",
+            "columns": "*",
+            "filter_clause": null,
+            "join_clause": null,
+            "flat": true,
+            "batch_size": 5000,
+            "min_wait": null,
+            "active": true,
+            "desc": null
+        }
+    ]
+}

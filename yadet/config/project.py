@@ -1,16 +1,18 @@
 from yadet.config.table import TableConfig
-from yadet.engine.source.base import SourceMssqlEngine
+from yadet.engine.source.base import SourceMssqlEngine, SourcePostgresEngine
 from yadet.engine.source.mssql import MsSqlSourceEngine
-from yadet.engine.target.base import TargetFileSystemEngine
+from yadet.engine.source.postgres import PostgresSourceEngine
+from yadet.engine.target.base import TargetFileEventStoreEngine, TargetFileSystemEngine
+from yadet.engine.target.file_event_store import FileEventStoreTargetEngine
 from yadet.engine.target.file_system import FileSystemTargetEngine
 from yadet.helpers.json import meta_handler
 from yadet.errors import ConfigException
 
-from pydantic import BaseModel, Field, field_validator, model_validator, PrivateAttr
 import json
 import os
 from pathlib import Path
-from typing import Dict, List, Optional, Union, Any
+from pydantic import BaseModel, Field, field_validator, model_validator, PrivateAttr
+from typing import Any, Dict, List, Union
 
 
 class ProjectConfig(BaseModel):
@@ -61,10 +63,10 @@ class ProjectConfig(BaseModel):
     @model_validator(mode="after")
     def validate_target_params(self) -> "ProjectConfig":
         """Validate that target_engine_params contains required base_directory."""
-        if self.target_engine == TargetFileSystemEngine:
+        if self.target_engine in (TargetFileSystemEngine, TargetFileEventStoreEngine):
             if "base_directory" not in self.target_engine_params:
                 raise ValueError(
-                    "target_engine_params must contain 'base_directory' for file_system engine"
+                    f"target_engine_params must contain 'base_directory' for {self.target_engine} engine"
                 )
         return self
     
@@ -142,16 +144,20 @@ class ProjectConfig(BaseModel):
             with open(self.table_index_filename, "w", encoding="utf-8") as f:
                 json.dump({}, f, indent=4)
     
-    def get_source_engine(self) -> MsSqlSourceEngine:
+    def get_source_engine(self) -> Union[MsSqlSourceEngine, PostgresSourceEngine]:
         """Get the source engine instance based on configuration."""
         if self.source_engine == SourceMssqlEngine:
             return MsSqlSourceEngine(**self.source_engine_params)
+        if self.source_engine == SourcePostgresEngine:
+            return PostgresSourceEngine(**self.source_engine_params)
         raise NotImplementedError(f"Engine Type `{self.source_engine}` not implemented")
     
-    def get_target_engine(self) -> FileSystemTargetEngine:
+    def get_target_engine(self) -> Union[FileSystemTargetEngine, FileEventStoreTargetEngine]:
         """Get the target engine instance based on configuration."""
         if self.target_engine == TargetFileSystemEngine:
             return FileSystemTargetEngine(**self.target_engine_params)
+        if self.target_engine == TargetFileEventStoreEngine:
+            return FileEventStoreTargetEngine(**self.target_engine_params)
         raise NotImplementedError(f"Engine Type `{self.target_engine}` not implemented")
     
     def save(self) -> None:

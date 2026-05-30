@@ -5,8 +5,9 @@ from yadet.objects.base import BaseObject
 from typing import Any
 
 SourceMssqlEngine = "mssql"
+SourcePostgresEngine = "postgres"
 
-SOURCE_ENGINE_OPTIONS = {SourceMssqlEngine, }
+SOURCE_ENGINE_OPTIONS = {SourceMssqlEngine, SourcePostgresEngine, }
 
 
 class SourceEngine(BaseObject):

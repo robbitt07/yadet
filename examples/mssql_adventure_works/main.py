@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
-# pip install yadet --upgrade
+# pip install yadet[mssql] --upgrade
 from yadet.config import ProjectConfig
 from yadet.batch import ProjectBatchRun
 from yadet.engine import SourceMssqlEngine, TargetFileSystemEngine

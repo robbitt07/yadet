@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "yadet"
-version = "1.6.0"
+version = "1.7.0"
 description = "A simple and effective Python data extraction tool"
 readme = "README.md"
 requires-python = ">=3.8"
@@ -25,9 +25,8 @@ classifiers = [
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
 ]
-keywords = ["data", "extraction", "etl", "mssql", "database"]
+keywords = ["data", "extraction", "etl", "mssql", "postgres", "database"]
 dependencies = [
-    "pyodbc",
     "python-dateutil",
     "pydantic>=2.0.0",
 ]
@@ -39,6 +38,16 @@ Repository = "https://github.com/robbitt07/yadet"
 "Bug Tracker" = "https://github.com/robbitt07/yadet/issues"
 
 [project.optional-dependencies]
+mssql = [
+    "pyodbc",
+]
+postgres = [
+    "psycopg[binary]>=3.1",
+]
+all = [
+    "pyodbc",
+    "psycopg[binary]>=3.1",
+]
 dev = [
     "pytest>=7.0",
     "pytest-cov>=4.0",
@@ -92,6 +101,7 @@ ignore_missing_imports = true
 [[tool.mypy.overrides]]
 module = [
     "pyodbc.*",
+    "psycopg.*",
 ]
 ignore_missing_imports = true
 
